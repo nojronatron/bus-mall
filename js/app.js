@@ -22,26 +22,19 @@ function MarketingImage(imgName, imgExtension = 'jpg') {
 }
 
 /* instantiate all of the image objects */
+let imageArray = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair',
+  'cthulu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark',
+  'sweep', 'tauntaun', 'unicorn', 'water-can', 'wine-glass'];
+
 function instantiateImages() {
-  new MarketingImage('bag');
-  new MarketingImage('banana');
-  new MarketingImage('bathroom');
-  new MarketingImage('boots');
-  new MarketingImage('breakfast');
-  new MarketingImage('bubblegum');
-  new MarketingImage('chair');
-  new MarketingImage('cthulhu');
-  new MarketingImage('dog-duck');
-  new MarketingImage('dragon');
-  new MarketingImage('pen');
-  new MarketingImage('pet-sweep');
-  new MarketingImage('scissors');
-  new MarketingImage('shark');
-  new MarketingImage('sweep', 'png');
-  new MarketingImage('tauntaun');
-  new MarketingImage('unicorn');
-  new MarketingImage('water-can');
-  new MarketingImage('wine-glass');
+  for (let idx = 0; idx < imageArray.length; idx++) {
+
+    if (imageArray[idx] === 'sweep') {
+      new MarketingImage(imageArray[idx], 'png');
+    } else {
+      new MarketingImage(imageArray[idx]);
+    }
+  }
 };
 
 /* functions */
