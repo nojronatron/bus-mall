@@ -88,10 +88,16 @@ function renderImages(threeImgs) {
   threeImages[2].displayed++;
 }
 
-/* event handlers */
-
-
-/* event listeners */
+/*  render report on screen */
+function displayResults(ulEl) {
+  
+  for (let idx = 0; idx < products.length; idx++)
+  {
+    let liEl = document.createElement('li');
+    liEl.textContent = `${products[idx].name} has ${products[idx].votes}, and was seen ${products[idx].displayed} times.`;
+    ulEl.appendChild(liEl);
+  }
+}
 
 /* trigger script execution */
 instantiateImages();
@@ -100,12 +106,38 @@ threeImages = getThreeImages();
 renderImages(threeImages);
 
 
+/* event handlers */
 
-  // for (let idx = 0; idx < products.length; idx++) {
-//   console.log(`Image ${products[idx].name} displayed ${products[idx].displayed} times.`);
-// }
+//  register vote with params
+function registerVote(event) {
+  let targetOfEvent = event.target.alt; //  get event target name
+  
+  for (let idx = 0; idx < products.length; idx++){
+    console.log(`registerVote fired: Event is ${targetOfEvent}`);
+    
+    if (products[idx].name === targetOfEvent) {
+      console.log(`found ${products[idx].name} with vote count ${products[idx].votes} incrementing vote count.`);
+      products[idx].votes++;
+      console.log(`${products[idx].name} now has ${products[idx].votes} votes.`);
+      return;
+    }
+  }
+}
 
-/*
-console.log(getThreeImages());
-console.dir(threeImgsArr);
-*/
+//  capture user pressing results button
+let ulElement = document.getElementById('results-ul');
+let resultsButton = document.getElementById('results-button');
+
+resultsButton.addEventListener('click', function (e) {
+  console.log(`entered ulElement.addEventListener anonymous method`);
+  displayResults(ulElement);
+}, false);
+
+/* query DOM to get a ref to an element that will have a listener attached */
+let resultsEl = document.getElementById('images-view');
+
+/* event listeners */
+resultsEl.addEventListener('click', function(e) { //  anonyfunc to insert param into registerVote
+  console.log(`addEventListener called.`);
+  registerVote(e);
+}, false);
