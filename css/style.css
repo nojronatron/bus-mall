@@ -1,11 +1,12 @@
-* {
-  border: black solid 2px;
-}
 header, body, footer {
   font-family: Courgette, cursive, sans-serif;
   font-size: 100%;
   margin: 0 10px;
   border: black solid 2px;
+}
+header {
+  font-size: 2em;
+  justify-content: center;
 }
 main {
   display: grid;
@@ -45,8 +46,10 @@ li {
   grid-row: 2/3;
 }
 #results-button {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
   border: black solid 2px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 1.5em;
+  text-align: center;
   border-radius: 6px;
   margin: 8px;
 }

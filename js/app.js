@@ -4,10 +4,10 @@
 let products = [];
 let threeImages = [];
 let maximumVotes = 5; //  remember to change this to 25 before submission
-let resultsButton = document.getElementById('results-button');
+let resultsButton = document.getElementById('results-button');  //  for captures results button click
 let currentVoteCount = 0;
-let ulElement = document.getElementById('results-ul');  //  for capturing user pressing results button
-let resultsEl = document.getElementById('images-view'); //  for displaying images
+let ulElement = document.getElementById('results-ul');  //  for displaying results
+let threeImagesEl = document.getElementById('images-view'); //  for displaying images
 
 /* objects representing image files */
 function MarketingImage(imgName, imgExtension = 'jpg') {
@@ -20,6 +20,7 @@ function MarketingImage(imgName, imgExtension = 'jpg') {
 
 /* instantiate all of the image objects */
 function instantiateImages() {
+  console.log('instantiateImages called.');
   new MarketingImage('bag');
   new MarketingImage('banana');
   new MarketingImage('bathroom');
@@ -50,6 +51,8 @@ function getRandomProduct() {
 
 //  HELPER FUNCTION selects three distinct images
 function getThreeImages() {
+  console.log('getThreeImages called');
+  console.log(`products.length: ${products.length}`);
   let leftProduct = getRandomProduct();
   let middleProduct = getRandomProduct();
   let rightProduct = getRandomProduct();
@@ -69,6 +72,9 @@ function getThreeImages() {
 
 //  render images on the screen
 function renderImages(threeImgs) {
+  console.log(`renderImages() called`);
+  console.log(`products.length: ${products.length}`);
+
   console.log(threeImgs[0].imgUrl);
   let leftImageEl = document.getElementById('left-img');
   leftImageEl.src = threeImgs[0].imgUrl;
@@ -90,31 +96,46 @@ function renderImages(threeImgs) {
 
 /*  render report on screen */
 function displayResults(ulEl) {
-  
+  console.log(`products.length: ${products.length}`);
+
   for (let idx = 0; idx < products.length; idx++)
   {
     let liEl = document.createElement('li');
-    liEl.textContent = `${products[idx].name} has ${products[idx].votes}, and was seen ${products[idx].displayed} times.`;
+    liEl.textContent = `${products[idx].name} has ${products[idx].votes} votes, and was seen ${products[idx].displayed} times.`;
     ulEl.appendChild(liEl);
   }
 }
 
 /*  primary executable code */
-instantiateImages();
-threeImages = getThreeImages();
-renderImages(threeImages);
+function main() {
+  console.log(`products.length: ${products.length}`);
+  instantiateImages();
+  console.log(`products.length: ${products.length}`);
+  threeImages = getThreeImages();
+  renderImages(threeImages);  
+}
+
+main();
+
+/* event listener for user click on favorite image */
+threeImagesEl.addEventListener('click', function(e) { //  anonyfunc to insert param into registerVote
+  console.log(`addEventListener called.`);
+  registerVote(e);
+}, false);
 
 /* event handlers */
 
 //  register vote with params
 function registerVote(event) {
+  console.log(`products.length: ${products.length}`);
+
   currentVoteCount++;
+  console.log(`currentVoteCount: ${currentVoteCount}`);
   let targetOfEvent = event.target.alt;
   console.log(`registerVote targetOfEvent: ${targetOfEvent}`);
-
+  
   for (let idx = 0; idx < products.length; idx++) {
-    console.log(`registerVote fired: Event is ${targetOfEvent}`);
-
+    
     if (products[idx].name === targetOfEvent) {
       console.log(`found ${products[idx].name} with vote count ${products[idx].votes} incrementing vote count.`);
       products[idx].votes++;
@@ -124,12 +145,15 @@ function registerVote(event) {
   }
 
   console.log(`currentVotCount: ${currentVoteCount}; maximumVotes: ${maximumVotes}`);
-  //  check to see if we continue or voting is over
+ 
+  //  check vote count if less than maximum then continue else allow results to be shown
   if (currentVoteCount < maximumVotes) {
+    console.log(`currentVoteCount is less than maximumVotes: ${currentVoteCount} < ${maximumVotes}`);
     threeImages = getThreeImages();
-    renderImages(threeImages);
+    renderImages(threeImages);  
   } else {
-    resultsEl.removeEventListener('click', function () { },true);
+    console.log(`removingEventListener for image selection.....`);
+    threeImagesEl.removeEventListener('click', function () { },true);
 
     //  adding event listener for Show Results button
     resultsButton.addEventListener('click', function (e) {
@@ -139,10 +163,3 @@ function registerVote(event) {
   }
 
 }
-
-
-/* event listeners */
-resultsEl.addEventListener('click', function(e) { //  anonyfunc to insert param into registerVote
-  console.log(`addEventListener called.`);
-  registerVote(e);
-}, false);
