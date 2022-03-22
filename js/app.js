@@ -2,7 +2,7 @@
 
 /* #################### global variables #################### */
 let products = [];
-let maximumVotes = 5; //  remember to change this to 25 before submission
+let maximumVotes = 25; //  remember to change this to 25 before submission
 let currentVoteCount = 0;
 let resultsButton = document.getElementById('results-button');  //  for captures results button click
 let ulElement = document.getElementById('results-ul');  //  for displaying results
