@@ -3,7 +3,7 @@
 /* global variables */
 let products = [];
 let threeImages = [];
-let maximumVotes = 25; //  remember to change this to 25 before submission
+let maximumVotes = 5; //  remember to change this to 25 before submission
 let resultsButton = document.getElementById('results-button');  //  for captures results button click
 let currentVoteCount = 0;
 let ulElement = document.getElementById('results-ul');  //  for displaying results
@@ -11,6 +11,7 @@ let threeImagesEl = document.getElementById('images-view'); //  for displaying i
 let leftImageEl = document.getElementById('left-img');
 let middleImageEl = document.getElementById('middle-img');
 let rightImageEl = document.getElementById('right-img');
+let previousThreeImages = []; //  holds last set of three images for comparison
 
 /* objects representing image files */
 function MarketingImage(imgName, imgExtension = 'jpg') {
@@ -38,10 +39,13 @@ function instantiateImages() {
 };
 
 /* functions */
-//  HELPER FUNCTION returns an image path from the array
+//  OLD: HELPER FUNCTION returns an image path from the array
+//  Helper Function returns a random integer between 0 and products.length, inclusive
 function getRandomProduct() {
-  let randNum = Math.floor(Math.random() * (products.length));
-  return products[randNum];
+  //  source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+  // let randNum = Math.floor(Math.random() * (products.length));
+  // return products[randNum];
+  return Math.floor(Math.random() * (products.length));
 }
 
 //  HELPER FUNCTION selects three distinct images
@@ -99,9 +103,7 @@ function main() {
 main();
 
 /* event listener for user click on favorite image */
-threeImagesEl.addEventListener('click', function(e) { //  anonyfunc to insert param into registerVote
-  registerVote(e);
-}, false);
+threeImagesEl.addEventListener('click', registerVote); //  anonyfunc to insert param into registerVote
 
 /* event handlers */
 
@@ -124,10 +126,10 @@ function registerVote(event) {
     renderImages(threeImages);  
   } else {
     //  remove images event listener
-    threeImagesEl.removeEventListener('click', function () { }, true);
+    threeImagesEl.removeEventListener('click', registerVote);
 
     //  remove images from the page
-    threeImagesEl.remove();
+    // threeImagesEl.remove();
 
     //  add an event listener to activate Show Results button
     resultsButton.addEventListener('click', function (e) {
