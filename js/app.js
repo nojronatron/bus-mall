@@ -8,6 +8,9 @@ let resultsButton = document.getElementById('results-button');  //  for captures
 let currentVoteCount = 0;
 let ulElement = document.getElementById('results-ul');  //  for displaying results
 let threeImagesEl = document.getElementById('images-view'); //  for displaying images
+let leftImageEl = document.getElementById('left-img');
+let middleImageEl = document.getElementById('middle-img');
+let rightImageEl = document.getElementById('right-img');
 
 /* objects representing image files */
 function MarketingImage(imgName, imgExtension = 'jpg') {
@@ -20,7 +23,6 @@ function MarketingImage(imgName, imgExtension = 'jpg') {
 
 /* instantiate all of the image objects */
 function instantiateImages() {
-  console.log('instantiateImages called.');
   new MarketingImage('bag');
   new MarketingImage('banana');
   new MarketingImage('bathroom');
@@ -51,19 +53,15 @@ function getRandomProduct() {
 
 //  HELPER FUNCTION selects three distinct images
 function getThreeImages() {
-  console.log('getThreeImages called');
-  console.log(`products.length: ${products.length}`);
   let leftProduct = getRandomProduct();
   let middleProduct = getRandomProduct();
   let rightProduct = getRandomProduct();
 
   while (leftProduct.name === middleProduct.name) {
-    alert(`left===middle: ${leftProduct.name} === ${middleProduct.name}`);
     middleProduct = getRandomProduct();
   }
   while (leftProduct.name === rightProduct.name || middleProduct.name === rightProduct.name)
   {
-    alert(`left===right: ${leftProduct.name} === ${rightProduct.name} or middle===right: ${middleProduct.name} === ${rightProduct.name}`);
     rightProduct = getRandomProduct();
   }
   
@@ -72,23 +70,17 @@ function getThreeImages() {
 
 //  render images on the screen
 function renderImages(threeImgs) {
-  console.log(`renderImages() called`);
-  console.log(`products.length: ${products.length}`);
-
-  console.log(threeImgs[0].imgUrl);
-  let leftImageEl = document.getElementById('left-img');
+  //  set left image src and alt (name)
   leftImageEl.src = threeImgs[0].imgUrl;
   leftImageEl.alt = threeImgs[0].name;
   threeImages[0].displayed++;
 
-  console.log(threeImgs[1].imgUrl);
-  let middleImageEl = document.getElementById('middle-img');
+  //  set middle image src and alt (name)
   middleImageEl.src = threeImgs[1].imgUrl;
   middleImageEl.alt = threeImgs[1].name;
   threeImages[1].displayed++;
 
-  console.log(threeImgs[2].imgUrl);
-  let rightImageEl = document.getElementById('right-img');
+  //  set right image src and alt (name)
   rightImageEl.src = threeImgs[2].imgUrl;
   rightImageEl.alt = threeImgs[2].name;
   threeImages[2].displayed++;
@@ -96,8 +88,6 @@ function renderImages(threeImgs) {
 
 /*  render report on screen */
 function displayResults(ulEl) {
-  console.log(`products.length: ${products.length}`);
-
   for (let idx = 0; idx < products.length; idx++)
   {
     let liEl = document.createElement('li');
@@ -108,9 +98,7 @@ function displayResults(ulEl) {
 
 /*  primary executable code */
 function main() {
-  console.log(`products.length: ${products.length}`);
   instantiateImages();
-  console.log(`products.length: ${products.length}`);
   threeImages = getThreeImages();
   renderImages(threeImages);  
 }
@@ -119,45 +107,37 @@ main();
 
 /* event listener for user click on favorite image */
 threeImagesEl.addEventListener('click', function(e) { //  anonyfunc to insert param into registerVote
-  console.log(`addEventListener called.`);
   registerVote(e);
 }, false);
 
 /* event handlers */
 
-//  register vote with params
+//  register vote function
 function registerVote(event) {
-  console.log(`products.length: ${products.length}`);
-
   currentVoteCount++;
-  console.log(`currentVoteCount: ${currentVoteCount}`);
   let targetOfEvent = event.target.alt;
-  console.log(`registerVote targetOfEvent: ${targetOfEvent}`);
   
   for (let idx = 0; idx < products.length; idx++) {
     
     if (products[idx].name === targetOfEvent) {
-      console.log(`found ${products[idx].name} with vote count ${products[idx].votes} incrementing vote count.`);
       products[idx].votes++;
-      console.log(`${products[idx].name} now has ${products[idx].votes} votes.`);
       break;
     }
   }
-
-  console.log(`currentVotCount: ${currentVoteCount}; maximumVotes: ${maximumVotes}`);
  
   //  check vote count if less than maximum then continue else allow results to be shown
   if (currentVoteCount < maximumVotes) {
-    console.log(`currentVoteCount is less than maximumVotes: ${currentVoteCount} < ${maximumVotes}`);
     threeImages = getThreeImages();
     renderImages(threeImages);  
   } else {
-    console.log(`removingEventListener for image selection.....`);
-    threeImagesEl.removeEventListener('click', function () { },true);
+    //  remove images event listener
+    threeImagesEl.removeEventListener('click', function () { }, true);
 
-    //  adding event listener for Show Results button
+    //  remove images from the page
+    threeImagesEl.remove();
+
+    //  add an event listener to activate Show Results button
     resultsButton.addEventListener('click', function (e) {
-      console.log(`entered ulElement.addEventListener anonymous method`);
       displayResults(ulElement);
     }, false);
   }
