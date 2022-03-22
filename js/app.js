@@ -9,7 +9,7 @@ let maximumVotes = 5; //  remember to change this to 25 before submission
 function MarketingImage(imgName, imgExtension = 'jpg') {
   this.name = imgName;
   this.imgUrl = `img/${imgName}.${imgExtension}`;
-  this.clicks = 0;
+  this.displayed = 0;
   this.votes = 0;
   products.push(this);
 }
@@ -73,16 +73,19 @@ function renderImages(threeImgs) {
   let leftImageEl = document.getElementById('left-img');
   leftImageEl.src = threeImgs[0].imgUrl;
   leftImageEl.alt = threeImgs[0].name;
+  threeImages[0].displayed++;
 
   console.log(threeImgs[1].imgUrl);
   let middleImageEl = document.getElementById('middle-img');
   middleImageEl.src = threeImgs[1].imgUrl;
   middleImageEl.alt = threeImgs[1].name;
+  threeImages[1].displayed++;
 
   console.log(threeImgs[2].imgUrl);
   let rightImageEl = document.getElementById('right-img');
   rightImageEl.src = threeImgs[2].imgUrl;
   rightImageEl.alt = threeImgs[2].name;
+  threeImages[2].displayed++;
 }
 
 /* event handlers */
@@ -93,7 +96,14 @@ function renderImages(threeImgs) {
 /* trigger script execution */
 instantiateImages();
 threeImages = getThreeImages();
+
 renderImages(threeImages);
+
+
+
+  // for (let idx = 0; idx < products.length; idx++) {
+//   console.log(`Image ${products[idx].name} displayed ${products[idx].displayed} times.`);
+// }
 
 /*
 console.log(getThreeImages());
