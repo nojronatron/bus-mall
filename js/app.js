@@ -4,8 +4,12 @@
 let products = [];
 let threeImages = [];
 let maximumVotes = 5; //  remember to change this to 25 before submission
+let resultsButton = document.getElementById('results-button');
+let currentVoteCount = 0;
+let ulElement = document.getElementById('results-ul');  //  for capturing user pressing results button
+let resultsEl = document.getElementById('images-view'); //  for displaying images
 
-/* objects */
+/* objects representing image files */
 function MarketingImage(imgName, imgExtension = 'jpg') {
   this.name = imgName;
   this.imgUrl = `img/${imgName}.${imgExtension}`;
@@ -26,13 +30,11 @@ function instantiateImages() {
   new MarketingImage('cthulhu');
   new MarketingImage('dog-duck');
   new MarketingImage('dragon');
-  
   new MarketingImage('pen');
   new MarketingImage('pet-sweep');
   new MarketingImage('scissors');
   new MarketingImage('shark');
   new MarketingImage('sweep', 'png');
-  
   new MarketingImage('tauntaun');
   new MarketingImage('unicorn');
   new MarketingImage('water-can');
@@ -40,16 +42,14 @@ function instantiateImages() {
 };
 
 /* functions */
-
 //  HELPER FUNCTION returns an image path from the array
 function getRandomProduct() {
   let randNum = Math.floor(Math.random() * (products.length));
   return products[randNum];
 }
 
-//  HELPER FUNCTION selects three distict images
+//  HELPER FUNCTION selects three distinct images
 function getThreeImages() {
-  //  select random products and return 3 in an array
   let leftProduct = getRandomProduct();
   let middleProduct = getRandomProduct();
   let rightProduct = getRandomProduct();
@@ -99,42 +99,47 @@ function displayResults(ulEl) {
   }
 }
 
-/* trigger script execution */
+/*  primary executable code */
 instantiateImages();
 threeImages = getThreeImages();
-
 renderImages(threeImages);
-
 
 /* event handlers */
 
 //  register vote with params
 function registerVote(event) {
-  let targetOfEvent = event.target.alt; //  get event target name
-  
-  for (let idx = 0; idx < products.length; idx++){
+  currentVoteCount++;
+  let targetOfEvent = event.target.alt;
+  console.log(`registerVote targetOfEvent: ${targetOfEvent}`);
+
+  for (let idx = 0; idx < products.length; idx++) {
     console.log(`registerVote fired: Event is ${targetOfEvent}`);
-    
+
     if (products[idx].name === targetOfEvent) {
       console.log(`found ${products[idx].name} with vote count ${products[idx].votes} incrementing vote count.`);
       products[idx].votes++;
       console.log(`${products[idx].name} now has ${products[idx].votes} votes.`);
-      return;
+      break;
     }
   }
+
+  console.log(`currentVotCount: ${currentVoteCount}; maximumVotes: ${maximumVotes}`);
+  //  check to see if we continue or voting is over
+  if (currentVoteCount < maximumVotes) {
+    threeImages = getThreeImages();
+    renderImages(threeImages);
+  } else {
+    resultsEl.removeEventListener('click', function () { },true);
+
+    //  adding event listener for Show Results button
+    resultsButton.addEventListener('click', function (e) {
+      console.log(`entered ulElement.addEventListener anonymous method`);
+      displayResults(ulElement);
+    }, false);
+  }
+
 }
 
-//  capture user pressing results button
-let ulElement = document.getElementById('results-ul');
-let resultsButton = document.getElementById('results-button');
-
-resultsButton.addEventListener('click', function (e) {
-  console.log(`entered ulElement.addEventListener anonymous method`);
-  displayResults(ulElement);
-}, false);
-
-/* query DOM to get a ref to an element that will have a listener attached */
-let resultsEl = document.getElementById('images-view');
 
 /* event listeners */
 resultsEl.addEventListener('click', function(e) { //  anonyfunc to insert param into registerVote
