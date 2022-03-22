@@ -75,10 +75,6 @@ function getThreeUniqueImages() {
 //  render images on the screen
 function renderImages() {
   let currentThree = getThreeUniqueImages();
-  // console.log(`currentThree: ${currentThree}`);
-  // console.log(products[currentThree[0]].name);
-  // console.log(products[currentThree[1]].name);
-  // console.log(products[currentThree[2]].name);
   
   //  set left image src and alt (name)
   leftImageEl.src = products[currentThree[0]].imgUrl;
@@ -96,18 +92,6 @@ function renderImages() {
   products[currentThree[2]].displayed++;
 }
 
-/*  render report on screen */
-function displayResults() {
-  for (let idx = 0; idx < products.length; idx++)
-  {
-    let liEl = document.createElement('li');
-    liEl.textContent = `${products[idx].name} has ${products[idx].votes} votes, and was seen ${products[idx].displayed} times.`;
-    ulElement.appendChild(liEl);
-  }
-
-  resultsButton.removeEventListener('click', displayResults);
-}
-
 /* #################### primary executable code #################### */
 function main() {
   instantiateImages();
@@ -120,7 +104,6 @@ main();
 
 /* event listener for user click on favorite image */
 threeImagesEl.addEventListener('click', registerVote); //  anonyfunc to insert param into registerVote
-
 
 //  register vote function
 function registerVote(event) {
@@ -142,8 +125,50 @@ function registerVote(event) {
     //  remove images event listener
     threeImagesEl.removeEventListener('click', registerVote);
 
+    //  set up arrays for chart data
+    let namesArr = [];
+    let viewsArr = [];
+    let votesArr = [];
+
+    for (let idx = 0; idx < products.length; idx++){
+      namesArr.push(products[idx].name);
+      viewsArr.push(products[idx].displayed);
+      votesArr.push(products[idx].votes);
+    }
+
     //  add an event listener to activate Show Results button
-    resultsButton.addEventListener('click', displayResults);
+    // resultsButton.addEventListener('click', displayResults);
+    //  call chartJS INSTEAD of adding an event listener to resultsButton
+    //  source: charjs.org/docs/latest/getting-started/
+  
+    const data = {
+      labels: namesArr,
+      datasets: [{
+        label: 'Views',
+        backgroundColor: 'rgb(255, 125, 0)',
+        borderColor: 'rgb(255,255,255)',
+        borderRadius: 8,
+        data: viewsArr,
+      },
+      {
+        label: 'Votes',
+        backgroundColor: 'rgb(0, 125, 255)',
+        borderColor: 'rgb(255, 255,255)',
+        borderRadius: 8,
+        data: votesArr,
+      }]
+    };
+  
+    const config = {
+      type: 'bar',
+      data: data,
+      options: { }
+    };
+
+    const testChart = new Chart(
+      document.getElementById('resultChart'),
+      config
+    );
   }
 
 }
