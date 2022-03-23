@@ -2,19 +2,20 @@ header, body {
   font-family: Courgette, cursive, sans-serif;
   font-size: 100%;
   margin: 0 10px;
-  max-width: 960px;
 }
 body {
   border: black solid 2px;
   border-radius: 6px;
   background-color: azure;
+  min-width: 670px;
+  max-width: 960px;
 }
 header {
   border: black solid 2px;
   border-radius: 6px;
-  font-size: 2em;
+  font-size: 1.8em;
   margin: 4px 8px 20px 8px;
-  background-color: white;
+  background-color: lightblue;
 }
 main {
   display: grid;
@@ -28,7 +29,7 @@ img {
   border: black solid 2px;
   border-radius: 6px;
   margin: 4px;
-  max-width: 200px;
+  min-width: 50px;
   max-height: 200px;
 }
 p {
@@ -52,9 +53,9 @@ p {
 #results-container {
   border: black solid 2px;
   border-radius: 6px;
-  min-width: 350px;
+  min-width: 640px;
   grid-column: 1/4;
   grid-row: 2/4;
   margin: 8px;
-  background-color: white;
+  background-color: lightblue;
 }
