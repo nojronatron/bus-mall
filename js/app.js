@@ -124,51 +124,55 @@ function registerVote(event) {
   } else {
     //  remove images event listener
     threeImagesEl.removeEventListener('click', registerVote);
-
-    //  set up arrays for chart data
-    let namesArr = [];
-    let viewsArr = [];
-    let votesArr = [];
-
-    for (let idx = 0; idx < products.length; idx++){
-      namesArr.push(products[idx].name);
-      viewsArr.push(products[idx].displayed);
-      votesArr.push(products[idx].votes);
-    }
-
-    //  add an event listener to activate Show Results button
-    // resultsButton.addEventListener('click', displayResults);
-    //  call chartJS INSTEAD of adding an event listener to resultsButton
-    //  source: charjs.org/docs/latest/getting-started/
-  
-    const data = {
-      labels: namesArr,
-      datasets: [{
-        label: 'Views',
-        backgroundColor: 'rgb(255, 125, 0)',
-        borderColor: 'rgb(255,255,255)',
-        borderRadius: 8,
-        data: viewsArr,
-      },
-      {
-        label: 'Votes',
-        backgroundColor: 'rgb(0, 125, 255)',
-        borderColor: 'rgb(255, 255,255)',
-        borderRadius: 8,
-        data: votesArr,
-      }]
-    };
-  
-    const config = {
-      type: 'bar',
-      data: data,
-      options: { }
-    };
-
-    const testChart = new Chart(
-      document.getElementById('resultChart'),
-      config
-    );
+    renderResultsChart();
   }
+
+}
+
+//  set up arrays for chart data
+function renderResultsChart() {
+  let namesArr = [];
+  let viewsArr = [];
+  let votesArr = [];
+  
+  for (let idx = 0; idx < products.length; idx++){
+    namesArr.push(products[idx].name);
+    viewsArr.push(products[idx].displayed);
+    votesArr.push(products[idx].votes);
+  }
+  
+  //  add an event listener to activate Show Results button
+  // resultsButton.addEventListener('click', displayResults);
+  //  call chartJS INSTEAD of adding an event listener to resultsButton
+  //  source: charjs.org/docs/latest/getting-started/
+  
+  const data = {
+    labels: namesArr,
+    datasets: [{
+      label: 'Views',
+      backgroundColor: 'rgb(255, 125, 0)',
+      borderColor: 'rgb(255,255,255)',
+      borderRadius: 8,
+      data: viewsArr,
+    },
+    {
+      label: 'Votes',
+      backgroundColor: 'rgb(0, 125, 255)',
+      borderColor: 'rgb(255, 255,255)',
+      borderRadius: 8,
+      data: votesArr,
+    }]
+  };
+  
+  const config = {
+    type: 'bar',
+    data: data,
+    options: { }
+  };
+  
+  const testChart = new Chart(
+    document.getElementById('resultChart'),
+    config
+  );
 
 }
