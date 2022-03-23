@@ -2,7 +2,7 @@
 
 /* #################### global variables #################### */
 let products = [];
-let maximumVotes = 5; //  remember to change this to 25 before submission
+let maximumVotes = 25; //  remember to change this to 25 before submission
 let currentVoteCount = 0;
 let resultsButton = document.getElementById('results-button');  //  for captures results button click
 let ulElement = document.getElementById('results-ul');  //  for displaying results
@@ -194,8 +194,10 @@ function renderResultsChart() {
   function getProductsFromLS() {
     let retrievedJSONimages = retreiveProducts();
     console.log(`retrievedJSONimages: ${retrievedJSONimages}.`);
+    console.log(typeof (retrievedJSONimages));
     parsedProdImages = JSON.parse(retrievedJSONimages);
     console.log(`parsedProdImages: ${parsedProdImages}.`);
+    alert(typeof (parsedProdImages));
     console.log(`products before LS 'get': ${products}.`);
     // products = parsedProdImages;
     // console.log(`products after LS 'get': ${products}.`);
@@ -204,11 +206,14 @@ function renderResultsChart() {
 
 /* ########## check for localstorage contents and load first ########## */
 function testLocalStorage() {
-  retreiveProducts = getProductsFromLS();
-  console.log(`testLocalStorage function got retreiveProducts: ${retreiveProducts}.`);
+  parsedProdImages = getProductsFromLS();
+  console.log(`testLocalStorage function got retreiveProducts: ${parsedProdImages}.`);
+  console.log(`typeof(parsedProdImages): ${typeof(parsedProdImages)}`);
+
   if (parsedProdImages) {
-    products.push(parsedProdImages);
+    products = parsedProdImages;
   } else {
+    console.log('testLocalStorage() if statement returned false.');
     instantiateImages();
   }
 }
