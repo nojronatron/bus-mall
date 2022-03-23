@@ -179,41 +179,29 @@ function renderResultsChart() {
   /* #################### store products array in local storage as JSON string #################### */
   function setProductsToLS() {
     let stringifiedImages = JSON.stringify(products);
-    console.log(stringifiedImages);
     localStorage.setItem(lsKeyName, stringifiedImages);
   }
   
   /* #################### retrieve products array from local storage #################### */
   function retreiveProducts() {
     let retreivedItems = localStorage.getItem(lsKeyName);
-    console.log(`retreiveProducts method returns: ${retreivedItems}`);
     return retreivedItems;
   }
   
   /* ############### parse products json items and pop them into the products array ############### */
   function getProductsFromLS() {
     let retrievedJSONimages = retreiveProducts();
-    console.log(`retrievedJSONimages: ${retrievedJSONimages}.`);
-    console.log(typeof (retrievedJSONimages));
     parsedProdImages = JSON.parse(retrievedJSONimages);
-    console.log(`parsedProdImages: ${parsedProdImages}.`);
-    alert(typeof (parsedProdImages));
-    console.log(`products before LS 'get': ${products}.`);
-    // products = parsedProdImages;
-    // console.log(`products after LS 'get': ${products}.`);
     return parsedProdImages;
   }
 
 /* ########## check for localstorage contents and load first ########## */
 function testLocalStorage() {
   parsedProdImages = getProductsFromLS();
-  console.log(`testLocalStorage function got retreiveProducts: ${parsedProdImages}.`);
-  console.log(`typeof(parsedProdImages): ${typeof(parsedProdImages)}`);
 
   if (parsedProdImages) {
     products = parsedProdImages;
   } else {
-    console.log('testLocalStorage() if statement returned false.');
     instantiateImages();
   }
 }
