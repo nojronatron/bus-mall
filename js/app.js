@@ -1,16 +1,16 @@
 'use strict';
 
-/* global variables */
+/* #################### global variables #################### */
 let products = [];
-let threeImages = [];
 let maximumVotes = 25; //  remember to change this to 25 before submission
-let resultsButton = document.getElementById('results-button');  //  for captures results button click
 let currentVoteCount = 0;
+let resultsButton = document.getElementById('results-button');  //  for captures results button click
 let ulElement = document.getElementById('results-ul');  //  for displaying results
 let threeImagesEl = document.getElementById('images-view'); //  for displaying images
 let leftImageEl = document.getElementById('left-img');
 let middleImageEl = document.getElementById('middle-img');
 let rightImageEl = document.getElementById('right-img');
+let previousThreeImgIdx = []; //  holds last set of three image indices for uniqueness comparison
 
 /* objects representing image files */
 function MarketingImage(imgName, imgExtension = 'jpg') {
@@ -21,96 +21,89 @@ function MarketingImage(imgName, imgExtension = 'jpg') {
   products.push(this);
 }
 
-/* instantiate all of the image objects */
+/* instantiate all image objects */
+let imageArray = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair',
+  'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark',
+  'sweep', 'tauntaun', 'unicorn', 'water-can', 'wine-glass'];
+
 function instantiateImages() {
-  new MarketingImage('bag');
-  new MarketingImage('banana');
-  new MarketingImage('bathroom');
-  new MarketingImage('boots');
-  new MarketingImage('breakfast');
-  new MarketingImage('bubblegum');
-  new MarketingImage('chair');
-  new MarketingImage('cthulhu');
-  new MarketingImage('dog-duck');
-  new MarketingImage('dragon');
-  new MarketingImage('pen');
-  new MarketingImage('pet-sweep');
-  new MarketingImage('scissors');
-  new MarketingImage('shark');
-  new MarketingImage('sweep', 'png');
-  new MarketingImage('tauntaun');
-  new MarketingImage('unicorn');
-  new MarketingImage('water-can');
-  new MarketingImage('wine-glass');
+  for (let idx = 0; idx < imageArray.length; idx++) {
+
+    if (imageArray[idx] === 'sweep') {
+      new MarketingImage(imageArray[idx], 'png');
+    } else {
+      new MarketingImage(imageArray[idx]);
+    }
+  }
 };
 
-/* functions */
-//  HELPER FUNCTION returns an image path from the array
-function getRandomProduct() {
-  let randNum = Math.floor(Math.random() * (products.length));
-  return products[randNum];
+/* #################### functions #################### */
+
+//  Helper Function returns a random integer between 0 and products.length, inclusive but unique vs previous 3
+function getRandomImageIntegers() {
+  while (true) {
+  //  source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+  let result = Math.floor(Math.random() * products.length);
+
+    if (!previousThreeImgIdx.includes(result)) {
+      return result;
+    }
+  }
 }
 
-//  HELPER FUNCTION selects three distinct images
-function getThreeImages() {
-  let leftProduct = getRandomProduct();
-  let middleProduct = getRandomProduct();
-  let rightProduct = getRandomProduct();
+//  HELPER FUNCTION selects three distinct images per view page or on next page of three
+function getThreeUniqueImages() {
+  let currentThree = [];
 
-  while (leftProduct.name === middleProduct.name) {
-    middleProduct = getRandomProduct();
-  }
-  while (leftProduct.name === rightProduct.name || middleProduct.name === rightProduct.name)
-  {
-    rightProduct = getRandomProduct();
+  for (let idx = 0; idx < 3; idx++){
+    currentThree[idx] = getRandomImageIntegers();
+
+    while (currentThree[0] === currentThree[1] || currentThree[0] === currentThree[2]) {
+      currentThree[idx] = getRandomImageIntegers();
+    }
+
+    while (currentThree[1] === currentThree[2]) {
+      currentThree[1] = getRandomImageIntegers();
+    }
   }
   
-  return [leftProduct, middleProduct, rightProduct];
+  console.log(`previousThree: ${previousThreeImgIdx}`);
+  previousThreeImgIdx = currentThree;
+  return currentThree;
 }
 
 //  render images on the screen
-function renderImages(threeImgs) {
+function renderImages() {
+  let currentThree = getThreeUniqueImages();
+  
   //  set left image src and alt (name)
-  leftImageEl.src = threeImgs[0].imgUrl;
-  leftImageEl.alt = threeImgs[0].name;
-  threeImages[0].displayed++;
+  leftImageEl.src = products[currentThree[0]].imgUrl;
+  leftImageEl.alt = products[currentThree[0]].name;
+  products[currentThree[0]].displayed++;
 
   //  set middle image src and alt (name)
-  middleImageEl.src = threeImgs[1].imgUrl;
-  middleImageEl.alt = threeImgs[1].name;
-  threeImages[1].displayed++;
+  middleImageEl.src = products[currentThree[1]].imgUrl;
+  middleImageEl.alt = products[currentThree[1]].name;
+  products[currentThree[1]].displayed++;
 
   //  set right image src and alt (name)
-  rightImageEl.src = threeImgs[2].imgUrl;
-  rightImageEl.alt = threeImgs[2].name;
-  threeImages[2].displayed++;
+  rightImageEl.src = products[currentThree[2]].imgUrl;
+  rightImageEl.alt = products[currentThree[2]].name;
+  products[currentThree[2]].displayed++;
 }
 
-/*  render report on screen */
-function displayResults(ulEl) {
-  for (let idx = 0; idx < products.length; idx++)
-  {
-    let liEl = document.createElement('li');
-    liEl.textContent = `${products[idx].name} has ${products[idx].votes} votes, and was seen ${products[idx].displayed} times.`;
-    ulEl.appendChild(liEl);
-  }
-}
-
-/*  primary executable code */
+/* #################### primary executable code #################### */
 function main() {
   instantiateImages();
-  threeImages = getThreeImages();
-  renderImages(threeImages);  
+  renderImages();
 }
 
 main();
 
-/* event listener for user click on favorite image */
-threeImagesEl.addEventListener('click', function(e) { //  anonyfunc to insert param into registerVote
-  registerVote(e);
-}, false);
+/* #################### event handling methods #################### */
 
-/* event handlers */
+/* event listener for user click on favorite image */
+threeImagesEl.addEventListener('click', registerVote); //  anonyfunc to insert param into registerVote
 
 //  register vote function
 function registerVote(event) {
@@ -127,19 +120,55 @@ function registerVote(event) {
  
   //  check vote count if less than maximum then continue else allow results to be shown
   if (currentVoteCount < maximumVotes) {
-    threeImages = getThreeImages();
-    renderImages(threeImages);  
+    renderImages();
   } else {
     //  remove images event listener
-    threeImagesEl.removeEventListener('click', function () { }, true);
+    threeImagesEl.removeEventListener('click', registerVote);
 
-    //  remove images from the page
-    threeImagesEl.remove();
+    //  set up arrays for chart data
+    let namesArr = [];
+    let viewsArr = [];
+    let votesArr = [];
+
+    for (let idx = 0; idx < products.length; idx++){
+      namesArr.push(products[idx].name);
+      viewsArr.push(products[idx].displayed);
+      votesArr.push(products[idx].votes);
+    }
 
     //  add an event listener to activate Show Results button
-    resultsButton.addEventListener('click', function (e) {
-      displayResults(ulElement);
-    }, false);
+    // resultsButton.addEventListener('click', displayResults);
+    //  call chartJS INSTEAD of adding an event listener to resultsButton
+    //  source: charjs.org/docs/latest/getting-started/
+  
+    const data = {
+      labels: namesArr,
+      datasets: [{
+        label: 'Views',
+        backgroundColor: 'rgb(255, 125, 0)',
+        borderColor: 'rgb(255,255,255)',
+        borderRadius: 8,
+        data: viewsArr,
+      },
+      {
+        label: 'Votes',
+        backgroundColor: 'rgb(0, 125, 255)',
+        borderColor: 'rgb(255, 255,255)',
+        borderRadius: 8,
+        data: votesArr,
+      }]
+    };
+  
+    const config = {
+      type: 'bar',
+      data: data,
+      options: { }
+    };
+
+    const testChart = new Chart(
+      document.getElementById('resultChart'),
+      config
+    );
   }
 
 }
