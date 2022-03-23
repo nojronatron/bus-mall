@@ -13,7 +13,7 @@ let rightImageEl = document.getElementById('right-img');
 let previousThreeImgIdx = []; //  holds last set of three image indices for uniqueness comparison
 let lsKeyName = 'votedItems';
 let jsonParsedProducts = [];
-let retrievedImages = [];
+let parsedProdImages = [];
 
 /* objects representing image files */
 function MarketingImage(imgName, imgExtension = 'jpg') {
@@ -26,12 +26,12 @@ function MarketingImage(imgName, imgExtension = 'jpg') {
 
 /* instantiate all image objects */
 let imageArray = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair',
-  'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark',
-  'sweep', 'tauntaun', 'unicorn', 'water-can', 'wine-glass'];
+'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark',
+'sweep', 'tauntaun', 'unicorn', 'water-can', 'wine-glass'];
 
 function instantiateImages() {
   for (let idx = 0; idx < imageArray.length; idx++) {
-
+    
     if (imageArray[idx] === 'sweep') {
       new MarketingImage(imageArray[idx], 'png');
     } else {
@@ -45,9 +45,9 @@ function instantiateImages() {
 //  Helper Function returns a random integer between 0 and products.length, inclusive but unique vs previous 3
 function getRandomImageIntegers() {
   while (true) {
-  //  source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
-  let result = Math.floor(Math.random() * products.length);
-
+    //  source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+    let result = Math.floor(Math.random() * products.length);
+    
     if (!previousThreeImgIdx.includes(result)) {
       return result;
     }
@@ -60,11 +60,11 @@ function getThreeUniqueImages() {
 
   for (let idx = 0; idx < 3; idx++){
     currentThree[idx] = getRandomImageIntegers();
-
+    
     while (currentThree[0] === currentThree[1] || currentThree[0] === currentThree[2]) {
       currentThree[idx] = getRandomImageIntegers();
     }
-
+    
     while (currentThree[1] === currentThree[2]) {
       currentThree[1] = getRandomImageIntegers();
     }
@@ -83,12 +83,12 @@ function renderImages() {
   leftImageEl.src = products[currentThree[0]].imgUrl;
   leftImageEl.alt = products[currentThree[0]].name;
   products[currentThree[0]].displayed++;
-
+  
   //  set middle image src and alt (name)
   middleImageEl.src = products[currentThree[1]].imgUrl;
   middleImageEl.alt = products[currentThree[1]].name;
   products[currentThree[1]].displayed++;
-
+  
   //  set right image src and alt (name)
   rightImageEl.src = products[currentThree[2]].imgUrl;
   rightImageEl.alt = products[currentThree[2]].name;
@@ -97,7 +97,7 @@ function renderImages() {
 
 /* #################### primary executable code #################### */
 function main() {
-  instantiateImages();
+  testLocalStorage();
   renderImages();
 }
 
@@ -120,7 +120,7 @@ function registerVote(event) {
       break;
     }
   }
- 
+  
   //  check vote count if less than maximum then continue else allow results to be shown
   if (currentVoteCount < maximumVotes) {
     renderImages();
@@ -130,7 +130,7 @@ function registerVote(event) {
     setProductsToLS();
     renderResultsChart();
   }
-
+  
 }
 
 //  set up arrays for chart data
@@ -172,29 +172,43 @@ function renderResultsChart() {
   const testChart = new Chart(
     document.getElementById('resultChart'),
     config
-  );
+    );
+    
+  }
+  
+  /* #################### store products array in local storage as JSON string #################### */
+  function setProductsToLS() {
+    let stringifiedImages = JSON.stringify(products);
+    console.log(stringifiedImages);
+    localStorage.setItem(lsKeyName, stringifiedImages);
+  }
+  
+  /* #################### retrieve products array from local storage #################### */
+  function retreiveProducts() {
+    let retreivedItems = localStorage.getItem(lsKeyName);
+    console.log(`retreiveProducts method returns: ${retreivedItems}`);
+    return retreivedItems;
+  }
+  
+  /* ############### parse products json items and pop them into the products array ############### */
+  function getProductsFromLS() {
+    let retrievedJSONimages = retreiveProducts();
+    console.log(`retrievedJSONimages: ${retrievedJSONimages}.`);
+    parsedProdImages = JSON.parse(retrievedJSONimages);
+    console.log(`parsedProdImages: ${parsedProdImages}.`);
+    console.log(`products before LS 'get': ${products}.`);
+    // products = parsedProdImages;
+    // console.log(`products after LS 'get': ${products}.`);
+    return parsedProdImages;
+  }
 
-}
-
-/* #################### store products array in local storage as JSON string #################### */
-function setProductsToLS() {
-  let stringifiedImages = JSON.stringify(products);
-  console.log(stringifiedImages);
-  localStorage.setItem(lsKeyName, stringifiedImages);
-}
-
-/* #################### retrieve products array from local storage #################### */
-function retreiveProducts() {
-  return localStorage.getItem(lsKeyName);
-}
-
-/* ############### parse products json items and pop them into the products array ############### */
-function getProductsFromLS() {
-  retrievedImages = retreiveProducts();
-  console.log(`retrievedImages: ${retrievedImages}.`);
-  let parsedProdImages = JSON.parse(retrievedImages);
-  console.log(`parsedProdImages: ${parsedProdImages}.`);
-  console.log(`products before LS 'get': ${products}.`);
-  products = parsedProdImages;
-  console.log(`products after LS 'get': ${products}.`);
+/* ########## check for localstorage contents and load first ########## */
+function testLocalStorage() {
+  retreiveProducts = getProductsFromLS();
+  console.log(`testLocalStorage function got retreiveProducts: ${retreiveProducts}.`);
+  if (parsedProdImages) {
+    products.push(parsedProdImages);
+  } else {
+    instantiateImages();
+  }
 }
