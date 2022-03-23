@@ -12,9 +12,9 @@ body {
 header {
   border: black solid 2px;
   border-radius: 6px;
-  font-size: 2em;
+  font-size: 1.8em;
   margin: 4px 8px 20px 8px;
-  background-color: white;
+  background-color: lightblue;
 }
 main {
   display: grid;
@@ -56,5 +56,5 @@ p {
   grid-column: 1/4;
   grid-row: 2/4;
   margin: 8px;
-  background-color: white;
+  background-color: lightblue;
 }
