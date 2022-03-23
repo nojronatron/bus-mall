@@ -11,6 +11,9 @@ let leftImageEl = document.getElementById('left-img');
 let middleImageEl = document.getElementById('middle-img');
 let rightImageEl = document.getElementById('right-img');
 let previousThreeImgIdx = []; //  holds last set of three image indices for uniqueness comparison
+let lsKeyName = 'votedItems';
+let jsonParsedProducts = [];
+let retrievedImages = [];
 
 /* objects representing image files */
 function MarketingImage(imgName, imgExtension = 'jpg') {
@@ -124,7 +127,7 @@ function registerVote(event) {
   } else {
     //  remove images event listener
     threeImagesEl.removeEventListener('click', registerVote);
-    setLocalStorage();
+    setProductsToLS();
     renderResultsChart();
   }
 
@@ -174,8 +177,24 @@ function renderResultsChart() {
 }
 
 /* #################### store products array in local storage as JSON string #################### */
-function setLocalStorage() {
+function setProductsToLS() {
   let stringifiedImages = JSON.stringify(products);
   console.log(stringifiedImages);
-  localStorage.setItem('votedItems', stringifiedImages);
+  localStorage.setItem(lsKeyName, stringifiedImages);
+}
+
+/* #################### retrieve products array from local storage #################### */
+function retreiveProducts() {
+  return localStorage.getItem(lsKeyName);
+}
+
+/* ############### parse products json items and pop them into the products array ############### */
+function getProductsFromLS() {
+  retrievedImages = retreiveProducts();
+  console.log(`retrievedImages: ${retrievedImages}.`);
+  let parsedProdImages = JSON.parse(retrievedImages);
+  console.log(`parsedProdImages: ${parsedProdImages}.`);
+  console.log(`products before LS 'get': ${products}.`);
+  products = parsedProdImages;
+  console.log(`products after LS 'get': ${products}.`);
 }
