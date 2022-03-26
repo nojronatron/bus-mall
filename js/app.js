@@ -2,11 +2,11 @@
 
 /* #################### global variables #################### */
 let products = [];
-let maximumVotes = 25; //  remember to change this to 25 before submission
+let maximumVotes = 25; //  set to number of maximum votes per page load
 let currentVoteCount = 0;
-let resultsButton = document.getElementById('results-button');  //  for captures results button click
-let ulElement = document.getElementById('results-ul');  //  for displaying results
-let threeImagesEl = document.getElementById('images-view'); //  for displaying images
+let resultsButton = document.getElementById('results-button'); 
+let ulElement = document.getElementById('results-ul');
+let threeImagesEl = document.getElementById('images-view');
 let leftImageEl = document.getElementById('left-img');
 let middleImageEl = document.getElementById('middle-img');
 let rightImageEl = document.getElementById('right-img');
@@ -15,7 +15,7 @@ let lsKeyName = 'votedItems';
 let jsonParsedProducts = [];
 let parsedProdImages = [];
 
-/* objects representing image files */
+/* template constructor representing image files */
 function MarketingImage(imgName, imgExtension = 'jpg') {
   this.name = imgName;
   this.imgUrl = `img/${imgName}.${imgExtension}`;
@@ -24,11 +24,12 @@ function MarketingImage(imgName, imgExtension = 'jpg') {
   products.push(this);
 }
 
-/* instantiate all image objects */
+/* Set up array of product names to quick-load into objects */
 let imageArray = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair',
 'cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark',
 'sweep', 'tauntaun', 'unicorn', 'water-can', 'wine-glass'];
 
+/* instantiate all image objects */
 function instantiateImages() {
   for (let idx = 0; idx < imageArray.length; idx++) {
     
@@ -101,12 +102,13 @@ function main() {
   renderImages();
 }
 
+/* Launch the JS portion of the application */
 main();
 
 /* #################### event handling methods #################### */
 
 /* event listener for user click on favorite image */
-threeImagesEl.addEventListener('click', registerVote); //  anonyfunc to insert param into registerVote
+threeImagesEl.addEventListener('click', registerVote);
 
 //  register vote function
 function registerVote(event) {
@@ -176,19 +178,19 @@ function renderResultsChart() {
     
   }
   
-  /* #################### store products array in local storage as JSON string #################### */
+  /* ########## store products array in local storage as JSON string ########## */
   function setProductsToLS() {
     let stringifiedImages = JSON.stringify(products);
     localStorage.setItem(lsKeyName, stringifiedImages);
   }
   
-  /* #################### retrieve products array from local storage #################### */
+  /* ############## retrieve products array from local storage ############## */
   function retreiveProducts() {
     let retreivedItems = localStorage.getItem(lsKeyName);
     return retreivedItems;
   }
   
-  /* ############### parse products json items and pop them into the products array ############### */
+  /* ####### parse products json items and pop them into the products array ######## */
   function getProductsFromLS() {
     let retrievedJSONimages = retreiveProducts();
     parsedProdImages = JSON.parse(retrievedJSONimages);
